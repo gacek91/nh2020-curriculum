@@ -638,11 +638,10 @@ class BinaryLogisticRegression:
 
     def update_trimming_weights(self, x, step_size, normalize_grad=True):
         """update trimming weight with given step size"""
-        w_new = project_onto_capped_simplex(
+        return project_onto_capped_simplex(
                 self.w - step_size*self.gradient_trimming_weights(
                         x, normalize_grad=normalize_grad),
                 self.h)
-        return w_new
 
     def fit_model(self,
                   x0=None,
@@ -780,11 +779,8 @@ class BinaryImageClassifier:
 
 def sizes_to_slices(sizes):
     """convert sizes to slices"""
-    slices = []
     break_points = np.cumsum(np.insert(sizes, 0, 0))
-    for i in range(len(sizes)):
-        slices.append(slice(break_points[i], break_points[i + 1]))
-    return slices
+    return [slice(break_points[i], break_points[i + 1]) for i in range(len(sizes))]
 
 
 def project_onto_capped_simplex(w, w_sum):
